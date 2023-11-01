@@ -7,9 +7,9 @@ class Game
 public:
     Game();
     void run();
-
 private:
     void render();
+    void update(Time time);
 
     RenderWindow game_window;
     Color game_backgroundColor;
@@ -18,5 +18,9 @@ private:
     RectangleShape game_playerPaddle;
     RectangleShape game_cpuPaddle;
     CircleShape game_ball;
-    Vector2f game_ballVelocity;     //it has two public members x and y , they are the component of 2D vector
+    float game_ballVelocityX;     //it has two public members x and y , they are the component of 2D vector
+    float game_ballVelocityY;     //it has two public members x and y , they are the component of 2D vector
+    float game_paddleVelocity;
+
+    Clock game_clock;
 };
