@@ -27,6 +27,13 @@ Game ::Game()
     // setting up pong ball
     game_ball.setFillColor(game_ballColor);
     game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2);
+
+    VideoMode screenResolution = VideoMode ::getDesktopMode();
+    float centerX = (static_cast<float>(screenResolution.width) - game_window.getSize().x) / 2;
+    float centerY = (static_cast<float>(screenResolution.height) - game_window.getSize().y) / 2;
+
+    game_window.create(sf::VideoMode(1280, 800), "Pong Game");
+    game_window.setPosition(sf::Vector2i(static_cast<int>(centerX), static_cast<int>(centerY)));
 }
 
 void Game ::run()
@@ -48,7 +55,7 @@ void Game ::run()
 }
 void Game::update(sf::Time time)
 {
-    //player paddle movement;
+    // player paddle movement;
     if (Keyboard::isKeyPressed(Keyboard::Up) && game_playerPaddle.getPosition().y > 0)
     {
         game_playerPaddle.move(0, -450 * time.asSeconds());
@@ -59,28 +66,55 @@ void Game::update(sf::Time time)
     }
     game_ball.move(game_ballVelocityX * time.asSeconds(), game_ballVelocityY * time.asSeconds());
 
-    
+    // Check collision with paddle
+    if (game_ball.getGlobalBounds().intersects(game_playerPaddle.getGlobalBounds()))
+    {
+        game_ball.move(-game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
+        game_ballVelocityX *= -1;
+    }
+    if (game_ball.getGlobalBounds().intersects(game_cpuPaddle.getGlobalBounds()))
+    {
+        game_ball.move(-game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
+        game_ballVelocityX *= -1;
+    }
 
-// Check for collision with top wall
-if (game_ball.getPosition().y < 0) {
-    game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
-    game_ballVelocityY *= -1;
-}
+    // Check for collision with top wall
+    if (game_ball.getPosition().y < 0)
+    {
+        game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
+        game_ballVelocityY *= -1;
+    }
 
-// Check for collision with bottom wall
-if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius() * 2) {
-    game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
-    game_ballVelocityY *= -1;
-}
+    // Check for collision with bottom wall
+    if (game_window.getSize().y > 800)
+    {
+        if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius() * 8)
+        {
+            game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
+            game_ballVelocityY *= -1;
+        }
+    }
+    else
+    {
 
-//cpu paddle movement;
-if (game_ball.getPosition().y > game_cpuPaddle.getPosition().y) {
-    game_cpuPaddle.move(0, 450 * time.asSeconds());
-}
-else {
-    game_cpuPaddle.move(0, -450 * time.asSeconds());
-}
+        if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius() * 2)
+        {
+            game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
+            game_ballVelocityY *= -1;
+        }
+    }
 
+    // cpu paddle movement;
+    if (game_ball.getPosition().y > game_cpuPaddle.getPosition().y)
+    {
+        game_cpuPaddle.move(0, 450 * time.asSeconds());
+    }
+    else
+    {
+        game_cpuPaddle.move(0, -450 * time.asSeconds());
+    }
+
+    // if it touches the left or right of the screen
 }
 
 void Game ::render()
