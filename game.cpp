@@ -48,6 +48,7 @@ void Game ::run()
 }
 void Game::update(sf::Time time)
 {
+    //player paddle movement;
     if (Keyboard::isKeyPressed(Keyboard::Up) && game_playerPaddle.getPosition().y > 0)
     {
         game_playerPaddle.move(0, -450 * time.asSeconds());
@@ -57,6 +58,29 @@ void Game::update(sf::Time time)
         game_playerPaddle.move(0, 450 * time.asSeconds());
     }
     game_ball.move(game_ballVelocityX * time.asSeconds(), game_ballVelocityY * time.asSeconds());
+
+    
+
+// Check for collision with top wall
+if (game_ball.getPosition().y < 0) {
+    game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
+    game_ballVelocityY *= -1;
+}
+
+// Check for collision with bottom wall
+if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius() * 2) {
+    game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
+    game_ballVelocityY *= -1;
+}
+
+//cpu paddle movement;
+if (game_ball.getPosition().y > game_cpuPaddle.getPosition().y) {
+    game_cpuPaddle.move(0, 450 * time.asSeconds());
+}
+else {
+    game_cpuPaddle.move(0, -450 * time.asSeconds());
+}
+
 }
 
 void Game ::render()
