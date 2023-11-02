@@ -2,6 +2,9 @@
 #include "game.h"
 #include <iostream>
 #include <cmath>
+#include <string>
+using namespace std;
+
 using namespace sf;
 
 Game ::Game()
@@ -15,6 +18,7 @@ Game ::Game()
     game_ballVelocityX = 450;
     game_ballVelocityY = 450;
     game_paddleVelocity = 7;
+    life = 5;
 
     // game window
     game_window.create(VideoMode(1280, 800), "Pong Game");
@@ -34,6 +38,20 @@ Game ::Game()
 
     game_window.create(sf::VideoMode(1280, 800), "Pong Game");
     game_window.setPosition(sf::Vector2i(static_cast<int>(centerX), static_cast<int>(centerY)));
+
+    // font
+    game_font.loadFromFile("arial.ttf");
+
+    // life
+    game_lifetext.setFont(game_font);
+    game_lifetext.setCharacterSize(36);
+    game_lifetext.setFillColor(Color ::Green);
+    // if (game_window.getSize().x > 1280)
+    // {
+    //     game_lifetext.setPosition(game_window.getSize().x / 2, 10.f);
+    // }
+    game_lifetext.setPosition(game_window.getSize().x / 2, 10.f);
+    game_lifetext.setString("Life: " + to_string(life));
 }
 
 void Game ::run()
@@ -125,9 +143,14 @@ void Game::update(sf::Time time)
     if (game_ball.getPosition().x < 0)
     {
         // Ball hit the left wall, reset its position and reverse the horizontal velocity
-
-        resetGame();
-
+        life = life - 1;
+        updateLifeText();
+        if (life <= 0)
+        {
+            resetGame();
+            game_window.clear(Color ::Black);
+            game_window.close();
+        }
         game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
         game_ballVelocityX *= -1;
     }
@@ -139,12 +162,16 @@ void Game::update(sf::Time time)
         game_ballVelocityX *= -1;
     }
 }
-
+void Game ::updateLifeText()
+{
+    game_lifetext.setString("Life: " + to_string(life));
+}
 void Game ::render()
 {
     game_window.clear(game_backgroundColor);
     game_window.draw(game_playerPaddle);
     game_window.draw(game_cpuPaddle);
     game_window.draw(game_ball);
+    game_window.draw(game_lifetext);
     game_window.display();
 }
