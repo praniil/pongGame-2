@@ -88,7 +88,7 @@ void Game::update(sf::Time time)
     // Check for collision with bottom wall
     if (game_window.getSize().y > 800)
     {
-        if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius() * 8)
+        if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius() * 9)
         {
             game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
             game_ballVelocityY *= -1;
