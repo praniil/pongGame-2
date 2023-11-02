@@ -8,6 +8,7 @@ public:
     Game();
     void run();
 private:
+    void resetGame();
     void render();
     void update(Time time);
 

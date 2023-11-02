@@ -53,6 +53,13 @@ void Game ::run()
         render();
     }
 }
+
+void Game ::resetGame()
+{
+    game_cpuPaddle.setPosition(game_window.getSize().x - 35.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
+    game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
+    game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2);
+}
 void Game::update(sf::Time time)
 {
     // player paddle movement;
@@ -115,6 +122,22 @@ void Game::update(sf::Time time)
     }
 
     // if it touches the left or right of the screen
+    if (game_ball.getPosition().x < 0)
+    {
+        // Ball hit the left wall, reset its position and reverse the horizontal velocity
+
+        resetGame();
+
+        game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
+        game_ballVelocityX *= -1;
+    }
+    if (game_ball.getPosition().x > game_window.getSize().x - game_ball.getRadius() * 2)
+    {
+        // Ball hit the right wall, reset its position and reverse the horizontal velocity
+
+        game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
+        game_ballVelocityX *= -1;
+    }
 }
 
 void Game ::render()
