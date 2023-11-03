@@ -96,6 +96,7 @@ void Game ::resetGame()
     updatescore();
     game_cpuPaddle.setPosition(game_window.getSize().x - 35.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
     game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
+
     game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2);
 }
 void Game::update(sf::Time time)
@@ -172,6 +173,18 @@ void Game::update(sf::Time time)
         }
         game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
         game_ballVelocityX *= -1;
+    }
+    if (game_window.getSize().x > 1280)
+    {
+        if (game_ball.getPosition().x > game_window.getSize().x - game_window.getSize().x / 3 - game_ball.getRadius() - 2.f)
+        {
+            // Ball hit the right wall, reset its position and reverse the horizontal velocity
+            game_score = game_score + 1;
+            updatescore();
+
+            game_ball.setPosition(game_window.getSize().x / 2 - game_window.getSize().x / 5, game_window.getSize().y / 2 - game_window.getSize().y / 5);
+            game_ballVelocityX *= -1;
+        }
     }
     if (game_ball.getPosition().x > game_window.getSize().x - game_ball.getRadius() * 2)
     {
