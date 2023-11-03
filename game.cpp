@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "game.h"
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <string>
 using namespace std;
@@ -18,7 +19,8 @@ Game ::Game()
     game_ballVelocityX = 450;
     game_ballVelocityY = 450;
     game_paddleVelocity = 7;
-    life = 5;
+    life = 2;
+    game_highscore = 0;
 
     // game window
     game_window.create(VideoMode(1280, 800), "Pong Game");
@@ -52,6 +54,19 @@ Game ::Game()
     // }
     game_lifetext.setPosition(game_window.getSize().x / 2, 10.f);
     game_lifetext.setString("Life: " + to_string(life));
+
+    // highscore
+    game_highscoretext.setFont(game_font);
+    game_highscoretext.setCharacterSize(36);
+    game_highscoretext.setFillColor(Color::Cyan);
+    game_highscoretext.setPosition(20.f, 10.f);
+
+    // gameScore
+    game_scoretext.setFont(game_font);
+    game_scoretext.setCharacterSize(36);
+    game_scoretext.setFillColor(Color::Cyan);
+    game_scoretext.setPosition(game_window.getSize().x / 2 + game_window.getSize().x / 4, 10.f);
+    game_scoretext.setString("Score: " + to_string(game_score));
 }
 
 void Game ::run()
@@ -68,14 +83,20 @@ void Game ::run()
         }
         Time time = game_clock.restart();
         update(time);
+        updateHighscore();
         render();
     }
 }
 
 void Game ::resetGame()
 {
+    game_score = 0;
+    life = 2;
+    updatelifeText();
+    updatescore();
     game_cpuPaddle.setPosition(game_window.getSize().x - 35.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
     game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
+
     game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2);
 }
 void Game::update(sf::Time time)
@@ -132,11 +153,11 @@ void Game::update(sf::Time time)
     // cpu paddle movement;
     if (game_ball.getPosition().y > game_cpuPaddle.getPosition().y)
     {
-        game_cpuPaddle.move(0, 450 * time.asSeconds());
+        game_cpuPaddle.move(0, 5 * time.asSeconds());
     }
     else
     {
-        game_cpuPaddle.move(0, -450 * time.asSeconds());
+        game_cpuPaddle.move(0, -5 * time.asSeconds());
     }
 
     // if it touches the left or right of the screen
@@ -144,27 +165,71 @@ void Game::update(sf::Time time)
     {
         // Ball hit the left wall, reset its position and reverse the horizontal velocity
         life = life - 1;
-        updateLifeText();
+        updatelifeText();
         if (life <= 0)
         {
             resetGame();
             game_window.clear(Color ::Black);
-            game_window.close();
         }
         game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
         game_ballVelocityX *= -1;
     }
+    if (game_window.getSize().x > 1280)
+    {
+        if (game_ball.getPosition().x > game_window.getSize().x - game_window.getSize().x / 3 - game_ball.getRadius() - 2.f)
+        {
+            // Ball hit the right wall, reset its position and reverse the horizontal velocity
+            game_score = game_score + 1;
+            updatescore();
+
+            game_ball.setPosition(game_window.getSize().x / 2 - game_window.getSize().x / 5, game_window.getSize().y / 2 - game_window.getSize().y / 5);
+            game_ballVelocityX *= -1;
+        }
+    }
     if (game_ball.getPosition().x > game_window.getSize().x - game_ball.getRadius() * 2)
     {
         // Ball hit the right wall, reset its position and reverse the horizontal velocity
+        game_score = game_score + 1;
+        updatescore();
 
         game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
         game_ballVelocityX *= -1;
     }
 }
-void Game ::updateLifeText()
+// highscore
+void Game ::loadHighscore()
+{
+    ifstream file("highscore.txt");
+    if (file.is_open())
+    {
+        file >> game_highscore;
+        file.close();
+    }
+}
+void Game ::saveHighscore()
+{
+    ofstream file("highscore.txt");
+    if (file.is_open())
+    {
+        file << game_highscore;
+        file.close();
+    }
+}
+void Game ::updateHighscore()
+{
+    if (game_score > game_highscore)
+    {
+        game_highscore = game_score;
+    }
+}
+void Game ::updatelifeText()
 {
     game_lifetext.setString("Life: " + to_string(life));
+}
+
+void Game ::updatescore()
+{
+    game_scoretext.setString("Score: " + to_string(game_score));
 }
 void Game ::render()
 {
@@ -172,6 +237,10 @@ void Game ::render()
     game_window.draw(game_playerPaddle);
     game_window.draw(game_cpuPaddle);
     game_window.draw(game_ball);
+    updatescore();
     game_window.draw(game_lifetext);
+    game_window.draw(game_scoretext);
+    game_highscoretext.setString("High Score: " + to_string(game_highscore));
+    game_window.draw(game_highscoretext);
     game_window.display();
 }
