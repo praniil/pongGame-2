@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "game.h"
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <string>
 using namespace std;
@@ -64,7 +65,7 @@ Game ::Game()
     game_scoretext.setFont(game_font);
     game_scoretext.setCharacterSize(36);
     game_scoretext.setFillColor(Color::Cyan);
-    game_scoretext.setPosition(game_window.getSize().x / 2 + game_window.getSize().x / 4 , 10.f);
+    game_scoretext.setPosition(game_window.getSize().x / 2 + game_window.getSize().x / 4, 10.f);
     game_scoretext.setString("Score: " + to_string(game_score));
 }
 
@@ -82,6 +83,7 @@ void Game ::run()
         }
         Time time = game_clock.restart();
         update(time);
+        updateHighscore();
         render();
     }
 }
@@ -181,14 +183,40 @@ void Game::update(sf::Time time)
         game_ballVelocityX *= -1;
     }
 }
+// highscore
+void Game ::loadHighscore()
+{
+    ifstream file("highscore.txt");
+    if (file.is_open())
+    {
+        file >> game_highscore;
+        file.close();
+    }
+}
+void Game ::saveHighscore()
+{
+    ofstream file("highscore.txt");
+    if (file.is_open())
+    {
+        file << game_highscore;
+        file.close();
+    }
+}
+void Game ::updateHighscore()
+{
+    if (game_score > game_highscore)
+    {
+        game_highscore = game_score;
+    }
+}
 void Game ::updatelifeText()
 {
     game_lifetext.setString("Life: " + to_string(life));
 }
 
-void Game :: updatescore() {
+void Game ::updatescore()
+{
     game_scoretext.setString("Score: " + to_string(game_score));
-    
 }
 void Game ::render()
 {
@@ -196,7 +224,10 @@ void Game ::render()
     game_window.draw(game_playerPaddle);
     game_window.draw(game_cpuPaddle);
     game_window.draw(game_ball);
+    updatescore();
     game_window.draw(game_lifetext);
     game_window.draw(game_scoretext);
+    game_highscoretext.setString("High Score: " + to_string(game_highscore));
+    game_window.draw(game_highscoretext);
     game_window.display();
 }

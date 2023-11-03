@@ -13,6 +13,10 @@ private:
     void update(Time time);
     void updatelifeText();
     void updatescore();
+    //for highscore
+    void loadHighscore();
+    void saveHighscore();
+    void updateHighscore();
 
     RenderWindow game_window;
     Color game_backgroundColor;
