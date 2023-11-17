@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include "button.h"
 #include "game.h"
 #include <iostream>
 #include <fstream>
@@ -7,7 +8,6 @@
 using namespace std;
 
 using namespace sf;
-
 Game ::Game()
 {
     game_backgroundColor = Color ::Black;
@@ -67,20 +67,73 @@ Game ::Game()
     game_scoretext.setFillColor(Color::Cyan);
     game_scoretext.setPosition(game_window.getSize().x / 2 + game_window.getSize().x / 4, 10.f);
     game_scoretext.setString("Score: " + to_string(game_score));
+    closeBtn = Button(20, 20, 100, 60, "Close", game_font, [this]()
+                      { game_window.close(); });
+    restartBtn = Button(140, 20, 100, 50, "Restart", game_font, [this]()
+                        {
+    game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
+    game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2); });
+
+    
+}
+bool Game::isRunning() const{
+    return game_window.isOpen();
+}
+bool Game::isWindowOpen()
+{
+    return game_window.isOpen();
 }
 
-void Game ::run()
+void Game::handleEvents()
+{
+    Event event;
+    while (game_window.pollEvent(event))
+    {
+        if (event.type == Event::Closed)
+        {
+            game_window.close();
+        }
+
+        // Check for button clicks
+        Vector2f mousePosition = Vector2f(Mouse::getPosition(game_window));
+        if (closeBtn.isClicked(mousePosition))
+        {
+            game_window.close();
+        }
+    
+        if (restartBtn.isClicked(mousePosition))
+        {
+            // Implement restart functionality
+            game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
+            game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2);
+        }
+    }
+}
+void Game::run()
 {
     while (game_window.isOpen())
     {
+        sf::Vector2i pixelPos = sf::Mouse::getPosition(game_window);
+        sf::Vector2f mousePosition = game_window.mapPixelToCoords(pixelPos);
+
+        if (closeBtn.isClicked(mousePosition))
+        {
+            game_window.close();
+        }
+        if (restartBtn.isClicked(mousePosition))
+        {
+            resetGame();
+        }
+
         Event event;
         while (game_window.pollEvent(event))
         {
-            if (event.type == Event ::Closed)
+            if (event.type == Event::Closed)
             {
                 game_window.close();
             }
         }
+
         Time time = game_clock.restart();
         update(time);
         updateHighscore();

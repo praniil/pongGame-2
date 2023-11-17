@@ -1,16 +1,20 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "button.h"
 using namespace sf;
 
 class Game
 {
 public:
     Game();
+    bool isWindowOpen();
+    bool isRunning() const;
+    void handleEvents();
+    void update(Time time);
+    void render();
     void run();
 private:
     void resetGame();
-    void render();
-    void update(Time time);
     void updatelifeText();
     void updatescore();
     //for highscore
@@ -39,4 +43,6 @@ private:
     Text game_scoretext;
 
     Clock game_clock;
+    Button closeBtn;
+    Button restartBtn;
 };
