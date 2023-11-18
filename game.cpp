@@ -67,9 +67,19 @@ Game ::Game()
     game_scoretext.setFillColor(Color::Cyan);
     game_scoretext.setPosition(game_window.getSize().x / 2 + game_window.getSize().x / 4, 10.f);
     game_scoretext.setString("Score: " + to_string(game_score));
-    closeBtn = Button(120, game_window.getPosition().y / 2, 100, 50, "Close", game_font, [this]()
+    if (game_window.getPosition().x > 1280)
+    {
+
+        closeBtn = Button(50, 0, 100, 50, "Close", game_font, [this]()
+                          { game_window.close(); });
+        restartBtn = Button(0, 20, 100, 50, "Restart", game_font, [this]()
+                            {
+    game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
+    game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2); });
+    }
+    closeBtn = Button(120, 50, 100, 50, "Close", game_font, [this]()
                       { game_window.close(); });
-    restartBtn = Button(20, game_window.getPosition().y, 100, 50, "Restart", game_font, [this]()
+    restartBtn = Button(20, 100, 100, 50, "Restart", game_font, [this]()
                         {
     game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
     game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2); });
