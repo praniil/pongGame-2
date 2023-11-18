@@ -12,7 +12,9 @@ public:
     void handleEvents();
     void update(Time time);
     void render();
+    void renderButton();
     void run();
+    void updateButtonPosition();
 private:
     void resetGame();
     void updatelifeText();

@@ -67,9 +67,9 @@ Game ::Game()
     game_scoretext.setFillColor(Color::Cyan);
     game_scoretext.setPosition(game_window.getSize().x / 2 + game_window.getSize().x / 4, 10.f);
     game_scoretext.setString("Score: " + to_string(game_score));
-    closeBtn = Button(20, 20, 100, 60, "Close", game_font, [this]()
+    closeBtn = Button(120, game_window.getPosition().y / 2, 100, 50, "Close", game_font, [this]()
                       { game_window.close(); });
-    restartBtn = Button(140, 20, 100, 50, "Restart", game_font, [this]()
+    restartBtn = Button(20, game_window.getPosition().y, 100, 50, "Restart", game_font, [this]()
                         {
     game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
     game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2); });
@@ -102,12 +102,11 @@ void Game::handleEvents()
         {
             game_window.close();
         }
-
-        if (restartBtn.isClicked(mousePosition))
+        bool restartClicked = restartBtn.isClicked(mousePosition);
+        if (event.type == Event::MouseButtonReleased && restartClicked)
         {
             // Implement restart functionality
-            game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
-            game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2);
+            resetGame();
         }
     }
 }
@@ -115,6 +114,14 @@ void Game::run()
 {
     while (game_window.isOpen())
     {
+        if (life <= 0)
+        {
+            render();
+            handleEvents();
+            resetGame();
+            game_window.clear(Color::Black);
+            break; // Skip the rest of the loop if life is zero
+        }
         Event event;
         while (game_window.pollEvent(event))
         {
@@ -123,6 +130,11 @@ void Game::run()
                 game_window.close();
             }
             handleEvents();
+        }
+
+        if (life <= 0)
+        {
+            break;
         }
 
         Time time = game_clock.restart();
@@ -212,8 +224,9 @@ void Game::update(sf::Time time)
         updatelifeText();
         if (life <= 0)
         {
-            resetGame();
+            render();
             handleEvents();
+            // resetGame();
             game_window.clear(Color ::Black);
         }
         game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
@@ -235,8 +248,11 @@ void Game::update(sf::Time time)
     if (game_ball.getPosition().x > game_window.getSize().x - game_ball.getRadius() * 2)
     {
         // Ball hit the right wall, reset its position and reverse the horizontal velocity
-        game_score = game_score + 1;
-        updatescore();
+        if (life >= 0)
+        {
+            game_score = game_score + 1;
+            updatescore();
+        }
 
         game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
         game_ballVelocityX *= -1;
@@ -278,6 +294,15 @@ void Game ::updatescore()
 {
     game_scoretext.setString("Score: " + to_string(game_score));
 }
+void Game ::renderButton()
+{
+    if (life <= 0)
+    {
+        game_window.clear(Color::Black);
+        closeBtn.draw(game_window);
+        restartBtn.draw(game_window);
+    }
+}
 void Game::render()
 {
     game_window.clear(game_backgroundColor);
@@ -292,14 +317,7 @@ void Game::render()
     game_window.draw(game_scoretext);
     game_highscoretext.setString("High Score: " + to_string(game_highscore));
     game_window.draw(game_highscoretext);
-
-    // Draw buttons
-    if (life <= 0)
-    {
-
-        closeBtn.draw(game_window);
-        restartBtn.draw(game_window);
-    }
+    renderButton();
 
     game_window.display();
 }
