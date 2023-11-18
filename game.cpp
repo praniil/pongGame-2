@@ -73,10 +73,9 @@ Game ::Game()
                         {
     game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
     game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2); });
-
-    
 }
-bool Game::isRunning() const{
+bool Game::isRunning() const
+{
     return game_window.isOpen();
 }
 bool Game::isWindowOpen()
@@ -96,11 +95,12 @@ void Game::handleEvents()
 
         // Check for button clicks
         Vector2f mousePosition = Vector2f(Mouse::getPosition(game_window));
-        if (closeBtn.isClicked(mousePosition))
+        bool closeClicked = closeBtn.isClicked(mousePosition);
+        if (event.type == Event::MouseButtonReleased && closeClicked)
         {
             game_window.close();
         }
-    
+
         if (restartBtn.isClicked(mousePosition))
         {
             // Implement restart functionality
@@ -113,18 +113,6 @@ void Game::run()
 {
     while (game_window.isOpen())
     {
-        sf::Vector2i pixelPos = sf::Mouse::getPosition(game_window);
-        sf::Vector2f mousePosition = game_window.mapPixelToCoords(pixelPos);
-
-        if (closeBtn.isClicked(mousePosition))
-        {
-            game_window.close();
-        }
-        if (restartBtn.isClicked(mousePosition))
-        {
-            resetGame();
-        }
-
         Event event;
         while (game_window.pollEvent(event))
         {
@@ -132,6 +120,7 @@ void Game::run()
             {
                 game_window.close();
             }
+            handleEvents();
         }
 
         Time time = game_clock.restart();
@@ -221,6 +210,7 @@ void Game::update(sf::Time time)
         updatelifeText();
         if (life <= 0)
         {
+            handleEvents();
             resetGame();
             game_window.clear(Color ::Black);
         }
@@ -284,7 +274,7 @@ void Game ::updatescore()
 {
     game_scoretext.setString("Score: " + to_string(game_score));
 }
-void Game ::render()
+void Game::render()
 {
     game_window.clear(game_backgroundColor);
     game_window.draw(game_playerPaddle);
@@ -295,5 +285,14 @@ void Game ::render()
     game_window.draw(game_scoretext);
     game_highscoretext.setString("High Score: " + to_string(game_highscore));
     game_window.draw(game_highscoretext);
+
+    // Draw buttons
+    if (life <= 0)
+    {
+
+        closeBtn.draw(game_window);
+        restartBtn.draw(game_window);
+    }
+
     game_window.display();
 }
