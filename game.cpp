@@ -73,6 +73,8 @@ Game ::Game()
                         {
     game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
     game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2); });
+    // loadHighscore();
+    // updateHighscore();
 }
 bool Game::isRunning() const
 {
@@ -210,8 +212,8 @@ void Game::update(sf::Time time)
         updatelifeText();
         if (life <= 0)
         {
-            handleEvents();
             resetGame();
+            handleEvents();
             game_window.clear(Color ::Black);
         }
         game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
@@ -227,6 +229,7 @@ void Game::update(sf::Time time)
 
             game_ball.setPosition(game_window.getSize().x / 2 - game_window.getSize().x / 5, game_window.getSize().y / 2 - game_window.getSize().y / 5);
             game_ballVelocityX *= -1;
+            updateHighscore();
         }
     }
     if (game_ball.getPosition().x > game_window.getSize().x - game_ball.getRadius() * 2)
@@ -263,6 +266,7 @@ void Game ::updateHighscore()
     if (game_score > game_highscore)
     {
         game_highscore = game_score;
+        saveHighscore();
     }
 }
 void Game ::updatelifeText()
@@ -281,6 +285,9 @@ void Game::render()
     game_window.draw(game_cpuPaddle);
     game_window.draw(game_ball);
     updatescore();
+    updateHighscore();
+    saveHighscore();
+    loadHighscore();
     game_window.draw(game_lifetext);
     game_window.draw(game_scoretext);
     game_highscoretext.setString("High Score: " + to_string(game_highscore));
