@@ -16,8 +16,8 @@ Game ::Game()
     game_playerPaddle.setSize(Vector2f(25, 75));
     game_cpuPaddle.setSize(Vector2f(25, 75));
     game_ball.setRadius(25);
-    game_ballVelocityX = 450;
-    game_ballVelocityY = 450;
+    // game_ballVelocityX = 450;
+    // game_ballVelocityY = 450;
     game_paddleVelocity = 7;
     game_score = -1;
     life = 2;
@@ -102,13 +102,19 @@ void Game::setupLevelButtons()
     int startY = (windowHeight - totalButtonHeight) / 2; // Starting y position to place buttons
 
     level1.setButton((windowWidth - buttonWidth) / 2, startY, buttonWidth, buttonHeight, "Level 1", game_font, [this]()
-                     { varCpuVelocity = 450; });
+                     { varCpuVelocity = 450;
+                     ballVeloX = 450;
+                     ballVeloY = 450; });
 
     level2.setButton((windowWidth - buttonWidth) / 2, startY + buttonHeight + buttonSpacing, buttonWidth, buttonHeight, "Level 2", game_font, [this]()
-                     { varCpuVelocity = 550; });
+                     { varCpuVelocity = 550;
+                      ballVeloX = 550;
+                     ballVeloY = 550; });
 
     level3.setButton((windowWidth - buttonWidth) / 2, startY + 2 * (buttonHeight + buttonSpacing), buttonWidth, buttonHeight, "Level 3", game_font, [this]()
-                     { varCpuVelocity = 660; });
+                     { varCpuVelocity = 660; 
+                      ballVeloX = 660;
+                     ballVeloY = 660; });
 }
 
 void Game::handleLevelSelection()
@@ -134,16 +140,22 @@ void Game::handleLevelSelection()
                     {
                         levelSelected = true;
                         varCpuVelocity = 450;
+                        ballVeloX = 450;
+                        ballVeloY = 450;
                     }
                     if (level2.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
                         varCpuVelocity = 550;
+                        ballVeloX = 550;
+                        ballVeloY = 550;
                     }
                     if (level3.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
                         varCpuVelocity = 660;
+                        ballVeloX = 660;
+                        ballVeloY = 660;
                     }
                 }
             }
@@ -247,25 +259,25 @@ void Game::update(sf::Time time)
     {
         game_playerPaddle.move(0, 450 * time.asSeconds());
     }
-    game_ball.move(game_ballVelocityX * time.asSeconds(), game_ballVelocityY * time.asSeconds());
+    game_ball.move(ballVeloX * time.asSeconds(), ballVeloY * time.asSeconds());
 
     // Check collision with paddle
     if (game_ball.getGlobalBounds().intersects(game_playerPaddle.getGlobalBounds()))
     {
-        game_ball.move(-game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
-        game_ballVelocityX *= -1;
+        game_ball.move(-ballVeloX * time.asSeconds(), -ballVeloY * time.asSeconds());
+        ballVeloX *= -1;
     }
     if (game_ball.getGlobalBounds().intersects(game_cpuPaddle.getGlobalBounds()))
     {
-        game_ball.move(-game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
-        game_ballVelocityX *= -1;
+        game_ball.move(-ballVeloX * time.asSeconds(), -ballVeloY * time.asSeconds());
+        ballVeloX *= -1;
     }
 
     // Check for collision with top wall
     if (game_ball.getPosition().y < 0)
     {
-        game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
-        game_ballVelocityY *= -1;
+        game_ball.move(ballVeloX * time.asSeconds(), -ballVeloY * time.asSeconds());
+        ballVeloY *= -1;
     }
 
     // Check for collision with bottom wall
@@ -273,8 +285,8 @@ void Game::update(sf::Time time)
     {
         if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius() * 9)
         {
-            game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
-            game_ballVelocityY *= -1;
+            game_ball.move(ballVeloX * time.asSeconds(), -ballVeloY * time.asSeconds());
+            ballVeloY *= -1;
         }
     }
     else
@@ -282,8 +294,8 @@ void Game::update(sf::Time time)
 
         if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius() * 2)
         {
-            game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
-            game_ballVelocityY *= -1;
+            game_ball.move(ballVeloX * time.asSeconds(), -ballVeloY * time.asSeconds());
+            ballVeloY *= -1;
         }
     }
 
@@ -311,7 +323,7 @@ void Game::update(sf::Time time)
             game_window.clear(Color ::Black);
         }
         game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
-        game_ballVelocityX *= -1;
+        ballVeloX *= -1;
     }
 
     if (game_window.getSize().x > 1280)
@@ -326,7 +338,7 @@ void Game::update(sf::Time time)
             }
 
             game_ball.setPosition(game_window.getSize().x / 2 - game_window.getSize().x / 5, game_window.getSize().y / 2 - game_window.getSize().y / 5);
-            game_ballVelocityX *= -1;
+            ballVeloX *= -1;
             updateHighscore();
         }
     }
@@ -339,7 +351,7 @@ void Game::update(sf::Time time)
             updatescore();
         }
         game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
-        game_ballVelocityX *= -1;
+        ballVeloX *= -1;
     }
 }
 // highscore
