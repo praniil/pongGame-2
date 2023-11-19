@@ -15,11 +15,15 @@ public:
     void renderButton();
     void run();
     void updateButtonPosition();
+    void setupButtons();
+    void handleStartButtonClick();
+
 private:
+    bool gameStarted;
     void resetGame();
     void updatelifeText();
     void updatescore();
-    //for highscore
+    // for highscore
     void loadHighscore();
     void saveHighscore();
     void updateHighscore();
@@ -32,8 +36,8 @@ private:
     RectangleShape game_cpuPaddle;
     CircleShape game_ball;
 
-    float game_ballVelocityX;     //it has two public members x and y , they are the component of 2D vector
-    float game_ballVelocityY;     //it has two public members x and y , they are the component of 2D vector
+    float game_ballVelocityX; // it has two public members x and y , they are the component of 2D vector
+    float game_ballVelocityY; // it has two public members x and y , they are the component of 2D vector
     float game_paddleVelocity;
     int life;
     int game_highscore;
@@ -47,4 +51,5 @@ private:
     Clock game_clock;
     Button closeBtn;
     Button restartBtn;
+    Button startBtn;
 };
