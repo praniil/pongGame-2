@@ -1,8 +1,8 @@
 #include "button.h"
-Button:: Button() {}
+Button::Button() {}
 
-
-void Button::draw(sf::RenderWindow& window) {
+void Button::draw(sf::RenderWindow &window)
+{
     window.draw(shape);
     window.draw(text);
 }
@@ -11,7 +11,8 @@ void Button::draw(sf::RenderWindow& window) {
 //     return shape.getGlobalBounds().contains(mousePosition);
 // }
 
-void Button::setStartButton(float x, float y, float width, float height, std::string buttonText, sf::Font& buttonFont, std::function<void()> onClickFunction) {
+void Button::setButton(float x, float y, float width, float height, std::string buttonText, sf::Font &buttonFont, std::function<void()> onClickFunction)
+{
     shape.setSize(sf::Vector2f(width, height));
     shape.setPosition(x, y);
     shape.setFillColor(sf::Color::Green); // Customize button color as needed
@@ -25,11 +26,13 @@ void Button::setStartButton(float x, float y, float width, float height, std::st
     onClickCallback = onClickFunction;
 }
 
-void Button:: drawStartButton(sf:: RenderWindow& window) {
+void Button::drawButton(sf::RenderWindow &window)
+{
     window.draw(shape);
     window.draw(text);
 }
 
-bool Button::isStartButtonClicked(const sf::Vector2f& mousePosition) const {
+bool Button::isButtonClicked(const sf::Vector2f &mousePosition) const
+{
     return shape.getGlobalBounds().contains(mousePosition);
 }

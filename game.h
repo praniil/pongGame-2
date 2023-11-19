@@ -17,6 +17,7 @@ public:
     void updateButtonPosition();
     void setupButtons();
     void handleStartButtonClick();
+    void setupLevelButtons();
 
 private:
     bool gameStarted;
@@ -27,6 +28,7 @@ private:
     void loadHighscore();
     void saveHighscore();
     void updateHighscore();
+    void handleLevelSelection();
 
     RenderWindow game_window;
     Color game_backgroundColor;
@@ -42,6 +44,9 @@ private:
     int life;
     int game_highscore;
     int game_score;
+    int varCpuVelocity;
+    int ballVeloX;
+    int ballVeloY;
 
     Font game_font;
     Text game_lifetext;
@@ -52,4 +57,7 @@ private:
     Button closeBtn;
     Button restartBtn;
     Button startBtn;
+    Button level1;
+    Button level2;
+    Button level3;
 };

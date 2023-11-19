@@ -65,8 +65,8 @@ Game ::Game()
     game_scoretext.setFillColor(Color::Cyan);
     game_scoretext.setPosition(game_window.getSize().x / 2 + game_window.getSize().x / 4, 10.f);
     // game_scoretext.setString("Score: " + to_string(game_score));
-    gameStarted = false;
-
+    bool levelSelected = false;
+    bool gameStarted = false;
     setupButtons();
     loadHighscore();
     // updateHighscore();
@@ -85,28 +85,91 @@ bool Game::isWindowOpen()
 // start button
 void Game ::setupButtons()
 {
-    startBtn.setStartButton(20, 150, 100, 50, "Start", game_font, [this]()
-                            {
-                            
-        // life = 2;
-        gameStarted = true; });
+    startBtn.setButton(20, 150, 100, 50, "Start", game_font, [this]()
+                       { gameStarted = true; });
+}
+void Game::setupLevelButtons()
+{
+    int windowWidth = game_window.getSize().x;
+    int windowHeight = game_window.getSize().y;
+
+    // Center the buttons horizontally and place them vertically at intervals
+    int buttonWidth = 100;
+    int buttonHeight = 50;
+    int buttonSpacing = 20;
+    int totalButtonHeight = (buttonHeight + buttonSpacing) * 3; // Total height occupied by buttons
+
+    int startY = (windowHeight - totalButtonHeight) / 2; // Starting y position to place buttons
+
+    level1.setButton((windowWidth - buttonWidth) / 2, startY, buttonWidth, buttonHeight, "Level 1", game_font, [this]()
+                     { varCpuVelocity = 450; });
+
+    level2.setButton((windowWidth - buttonWidth) / 2, startY + buttonHeight + buttonSpacing, buttonWidth, buttonHeight, "Level 2", game_font, [this]()
+                     { varCpuVelocity = 550; });
+
+    level3.setButton((windowWidth - buttonWidth) / 2, startY + 2 * (buttonHeight + buttonSpacing), buttonWidth, buttonHeight, "Level 3", game_font, [this]()
+                     { varCpuVelocity = 660; });
 }
 
+void Game::handleLevelSelection()
+{
+    bool levelSelected = false;
+    while (game_window.isOpen() && !levelSelected)
+    {
+        Event event;
+        while (game_window.pollEvent(event))
+        {
+            if (event.type == Event::Closed)
+            {
+                game_window.close();
+            }
+
+            if (event.type == Event::MouseButtonPressed)
+            {
+                if (event.mouseButton.button == Mouse::Left)
+                {
+                    Vector2f mousePosition = Vector2f(Mouse::getPosition(game_window));
+
+                    if (level1.isButtonClicked(mousePosition))
+                    {
+                        levelSelected = true;
+                        varCpuVelocity = 450;
+                    }
+                    if (level2.isButtonClicked(mousePosition))
+                    {
+                        levelSelected = true;
+                        varCpuVelocity = 550;
+                    }
+                    if (level3.isButtonClicked(mousePosition))
+                    {
+                        levelSelected = true;
+                        varCpuVelocity = 660;
+                    }
+                }
+            }
+        }
+    }
+    game_window.clear(Color::Black);
+    level1.drawButton(game_window);
+    level2.drawButton(game_window);
+    level3.drawButton(game_window);
+    game_window.display();
+}
 void Game ::handleStartButtonClick()
 {
     Vector2f mosePosition = Vector2f(Mouse::getPosition(game_window));
-    if (startBtn.isStartButtonClicked(mosePosition))
+    if (startBtn.isButtonClicked(mosePosition))
     {
-        // life = 2;
-        // game_score = 0;
-        // updatescore();
         gameStarted = true;
+        setupLevelButtons();
     }
 }
 void Game::run()
 {
     setupButtons();
+    setupLevelButtons();
     bool gameStarted = false;
+    bool levelSelected = false;
 
     while (game_window.isOpen())
     {
@@ -120,31 +183,42 @@ void Game::run()
             if (!gameStarted)
             {
                 Vector2f mousePosition = Vector2f(Mouse::getPosition(game_window));
-                if (startBtn.isStartButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
+                if (startBtn.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
                 {
+
                     gameStarted = true;
+                    levelSelected = false;
                 }
             }
         }
-
         game_window.clear(Color::Black);
-
-        if (gameStarted)
+        if (gameStarted && !levelSelected)
+        {
+            handleLevelSelection();
+            levelSelected = true;
+        }
+        if (!levelSelected)
+        {
+            level1.drawButton(game_window);
+            level2.drawButton(game_window);
+            level3.drawButton(game_window);
+        }
+        if (gameStarted && levelSelected)
         {
             if (life <= 0)
             {
                 resetGame();
                 game_window.clear(Color::Black);
-                break; // Skip the rest of the loop if life is zero
+                break;
             }
             Time time = game_clock.restart();
             update(time); // Update game logic
             updateHighscore();
-            render(); // Render game elements
+            render();
         }
         else
         {
-            startBtn.draw(game_window); // Render start button
+            startBtn.draw(game_window);
         }
 
         game_window.display();
@@ -216,11 +290,11 @@ void Game::update(sf::Time time)
     // cpu paddle movement;
     if (game_ball.getPosition().y > game_cpuPaddle.getPosition().y)
     {
-        game_cpuPaddle.move(0, 5 * time.asSeconds());
+        game_cpuPaddle.move(0, varCpuVelocity * time.asSeconds());
     }
     else
     {
-        game_cpuPaddle.move(0, -5 * time.asSeconds());
+        game_cpuPaddle.move(0, -varCpuVelocity * time.asSeconds());
     }
 
     // if it touches the left or right of the screen
