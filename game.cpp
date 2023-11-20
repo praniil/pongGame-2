@@ -156,22 +156,22 @@ void Game::handleLevelSelection()
                     {
                         levelSelected = true;
                         varCpuVelocity = 450;
-                        ballVeloX = 450;
-                        ballVeloY = 450;
+                        ballVeloX = 400;
+                        ballVeloY = 400;
                     }
                     if (level2.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
-                        varCpuVelocity = 700;
-                        ballVeloX = 550;
-                        ballVeloY = 550;
+                        varCpuVelocity = 550;
+                        ballVeloX = 500;
+                        ballVeloY = 500;
                     }
                     if (level3.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
-                        varCpuVelocity = 900;
-                        ballVeloX = 660;
-                        ballVeloY = 660;
+                        varCpuVelocity = 650;
+                        ballVeloX = 600;
+                        ballVeloY = 600;
                     }
                 }
             }
@@ -292,7 +292,7 @@ void Game::update(Time time)
     // cpu paddle movement;
     if (game_ball.getPosition().y > game_cpuPaddle.getPosition().y)
     {
-        game_cpuPaddle.move(0, varCpuVelocity * (time.asSeconds() / 1.5));
+        game_cpuPaddle.move(0, varCpuVelocity * (time.asSeconds()));
     }
     else
     {

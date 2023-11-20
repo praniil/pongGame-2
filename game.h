@@ -15,13 +15,16 @@ public:
     void renderButton();
     void run();
     void updateButtonPositions();
-    void setupButtons();
     void handleStartButtonClick();
+    void setupButtons();
     void setupLevelButtons();
+    void setupMultiplayerButton();
+    void handleMultiplayerButtonClick();
 
 private:
     bool gameStarted;
     bool levelSelected;
+    bool multiplayerMode;
     void resetGame();
     void updatelifeText();
     void updatescore();
@@ -70,4 +73,5 @@ private:
     Button level1;
     Button level2;
     Button level3;
+    Button multiplayer;
 };
