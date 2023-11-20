@@ -14,16 +14,18 @@ public:
     void render();
     void renderButton();
     void run();
-    void updateButtonPosition();
+    void updateButtonPositions();
     void setupButtons();
     void handleStartButtonClick();
     void setupLevelButtons();
 
 private:
     bool gameStarted;
+    bool levelSelected;
     void resetGame();
     void updatelifeText();
     void updatescore();
+    void updateButtonPosition();
     // for highscore
     void loadHighscore();
     void saveHighscore();
@@ -47,6 +49,14 @@ private:
     int varCpuVelocity;
     int ballVeloX;
     int ballVeloY;
+    int windowWidth; // Default width
+    int windowHeight; // Default height
+    int buttonWidth;
+    int buttonHeight;
+    int buttonSpacing;
+    int buttonPosX;
+    int buttonPosY;
+    int startY;
 
     Font game_font;
     Text game_lifetext;

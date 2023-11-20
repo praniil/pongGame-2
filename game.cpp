@@ -16,6 +16,8 @@ Game ::Game()
     game_playerPaddle.setSize(Vector2f(25, 75));
     game_cpuPaddle.setSize(Vector2f(25, 75));
     game_ball.setRadius(25);
+    int windowWidth = 1280; // Default width
+    int windowHeight = 800; // Default height
     // game_ballVelocityX = 450;
     // game_ballVelocityY = 450;
     game_paddleVelocity = 7;
@@ -25,15 +27,6 @@ Game ::Game()
 
     // game window
     game_window.create(VideoMode(1280, 800), "Pong Game");
-    // setting up player paddle
-    game_playerPaddle.setFillColor(game_paddleColor);
-    game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
-    // setting up cpu paddle
-    game_cpuPaddle.setFillColor(game_paddleColor);
-    game_cpuPaddle.setPosition(game_window.getSize().x - 35.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
-    // setting up pong ball
-    game_ball.setFillColor(game_ballColor);
-    game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2);
 
     VideoMode screenResolution = VideoMode ::getDesktopMode();
     float centerX = (static_cast<float>(screenResolution.width) - game_window.getSize().x) / 2;
@@ -41,6 +34,15 @@ Game ::Game()
 
     game_window.create(sf::VideoMode(1280, 800), "Pong Game");
     game_window.setPosition(sf::Vector2i(static_cast<int>(centerX), static_cast<int>(centerY)));
+    // setting up player paddle
+    game_playerPaddle.setFillColor(game_paddleColor);
+    game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
+    // setting up cpu paddle
+    game_cpuPaddle.setFillColor(game_paddleColor);
+    game_cpuPaddle.setPosition(game_window.getSize().x - 35.f, game_window.getSize().y / 2 - game_cpuPaddle.getSize().y / 2);
+    // setting up pong ball
+    game_ball.setFillColor(game_ballColor);
+    game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
 
     // font
     game_font.loadFromFile("arial.ttf");
@@ -65,8 +67,8 @@ Game ::Game()
     game_scoretext.setFillColor(Color::Cyan);
     game_scoretext.setPosition(game_window.getSize().x / 2 + game_window.getSize().x / 4, 10.f);
     // game_scoretext.setString("Score: " + to_string(game_score));
-    bool levelSelected = false;
-    bool gameStarted = false;
+    gameStarted = false;
+    levelSelected = false;
     setupButtons();
     loadHighscore();
     // updateHighscore();
@@ -83,38 +85,47 @@ bool Game::isWindowOpen()
 }
 
 // start button
-void Game ::setupButtons()
+void Game::setupButtons()
 {
-    startBtn.setButton(20, 150, 100, 50, "Start", game_font, [this]()
+    updateButtonPositions();
+    startBtn.setButton(buttonPosX, buttonPosY, buttonWidth, buttonHeight, "Start", game_font, [this]()
                        { gameStarted = true; });
 }
+
 void Game::setupLevelButtons()
 {
-    int windowWidth = game_window.getSize().x;
-    int windowHeight = game_window.getSize().y;
-
-    // Center the buttons horizontally and place them vertically at intervals
-    int buttonWidth = 100;
-    int buttonHeight = 50;
-    int buttonSpacing = 20;
-    int totalButtonHeight = (buttonHeight + buttonSpacing) * 3; // Total height occupied by buttons
-
-    int startY = (windowHeight - totalButtonHeight) / 2; // Starting y position to place buttons
-
+    updateButtonPositions();
     level1.setButton((windowWidth - buttonWidth) / 2, startY, buttonWidth, buttonHeight, "Level 1", game_font, [this]()
-                     { varCpuVelocity = 450;
-                     ballVeloX = 450;
-                     ballVeloY = 450; });
+                     {
+        varCpuVelocity = 800;
+        ballVeloX = 450;
+        ballVeloY = 450; });
 
     level2.setButton((windowWidth - buttonWidth) / 2, startY + buttonHeight + buttonSpacing, buttonWidth, buttonHeight, "Level 2", game_font, [this]()
-                     { varCpuVelocity = 550;
-                      ballVeloX = 550;
-                     ballVeloY = 550; });
+                     {
+        varCpuVelocity = 800;
+        ballVeloX = 550;
+        ballVeloY = 550; });
 
     level3.setButton((windowWidth - buttonWidth) / 2, startY + 2 * (buttonHeight + buttonSpacing), buttonWidth, buttonHeight, "Level 3", game_font, [this]()
-                     { varCpuVelocity = 660; 
-                      ballVeloX = 660;
-                     ballVeloY = 660; });
+                     {
+        varCpuVelocity = 1000;
+        ballVeloX = 660;
+        ballVeloY = 660; });
+}
+
+void Game::updateButtonPositions()
+{
+    windowWidth = game_window.getSize().x;
+    windowHeight = game_window.getSize().y;
+
+    buttonWidth = windowWidth / 8;
+    buttonHeight = windowHeight / 16;
+    buttonSpacing = windowHeight / 24;
+
+    buttonPosX = windowWidth / 10;
+    buttonPosY = windowHeight / 4;
+    startY = windowHeight / 3;
 }
 
 void Game::handleLevelSelection()
@@ -129,12 +140,17 @@ void Game::handleLevelSelection()
             {
                 game_window.close();
             }
-
+            if (event.type == sf::Event::Resized)
+            {
+                updateButtonPositions();
+            }
             if (event.type == Event::MouseButtonPressed)
             {
                 if (event.mouseButton.button == Mouse::Left)
                 {
-                    Vector2f mousePosition = Vector2f(Mouse::getPosition(game_window));
+                    sf::Vector2f mousePosition = game_window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+
+                    Time time;
 
                     if (level1.isButtonClicked(mousePosition))
                     {
@@ -172,7 +188,7 @@ void Game ::handleStartButtonClick()
     Vector2f mosePosition = Vector2f(Mouse::getPosition(game_window));
     if (startBtn.isButtonClicked(mosePosition))
     {
-        gameStarted = true;
+        gameStarted = false;
         setupLevelButtons();
     }
 }
@@ -180,8 +196,8 @@ void Game::run()
 {
     setupButtons();
     setupLevelButtons();
-    bool gameStarted = false;
-    bool levelSelected = false;
+    gameStarted = false;
+    levelSelected = false;
 
     while (game_window.isOpen())
     {
@@ -192,9 +208,14 @@ void Game::run()
             {
                 game_window.close();
             }
+            if (event.type == sf::Event::Resized)
+            {
+                updateButtonPositions();
+            }
             if (!gameStarted)
             {
-                Vector2f mousePosition = Vector2f(Mouse::getPosition(game_window));
+                sf::Vector2f mousePosition = game_window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+
                 if (startBtn.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
                 {
 
@@ -211,22 +232,26 @@ void Game::run()
         }
         if (!levelSelected)
         {
+            setupButtons();
+            setupLevelButtons();
             level1.drawButton(game_window);
             level2.drawButton(game_window);
             level3.drawButton(game_window);
         }
         if (gameStarted && levelSelected)
         {
+
             if (life <= 0)
             {
                 resetGame();
                 game_window.clear(Color::Black);
                 break;
             }
+            game_window.draw(game_cpuPaddle);
             Time time = game_clock.restart();
+            render();
             update(time); // Update game logic
             updateHighscore();
-            render();
         }
         else
         {
@@ -243,10 +268,12 @@ void Game ::resetGame()
     life = 2;
     updatelifeText();
     // updatescore();
-    game_cpuPaddle.setPosition(game_window.getSize().x - 35.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
+    game_window.draw(game_cpuPaddle);
+    game_cpuPaddle.setPosition(game_window.getSize().x - 35.f, game_window.getSize().y / 2 - game_cpuPaddle.getSize().y / 2);
     game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
+    cout << (game_cpuPaddle.getPosition().x, game_cpuPaddle.getPosition().y);
 
-    game_ball.setPosition(game_window.getSize().x / 2, game_window.getSize().y / 2);
+    game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
 }
 void Game::update(sf::Time time)
 {
@@ -397,7 +424,6 @@ void Game::render()
     game_window.draw(game_playerPaddle);
     game_window.draw(game_cpuPaddle);
     game_window.draw(game_ball);
-
     game_window.draw(game_lifetext);
     game_window.draw(game_scoretext);
     game_scoretext.setString("Score: " + to_string(game_score));
