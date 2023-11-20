@@ -9,10 +9,8 @@ public:
     Game();
     bool isWindowOpen();
     bool isRunning() const;
-    void handleEvents();
     void update(Time time);
     void render();
-    void renderButton();
     void run();
     void updateButtonPositions();
     void handleStartButtonClick();
@@ -28,7 +26,6 @@ private:
     void resetGame();
     void updatelifeText();
     void updatescore();
-    void updateButtonPosition();
     // for highscore
     void loadHighscore();
     void saveHighscore();
