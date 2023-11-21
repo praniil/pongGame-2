@@ -382,29 +382,30 @@ void Game ::resetGame()
 }
 void Game::update(Time time)
 {
-    // player paddle movement;
 
-    // cpu paddle movement;
     if (!multiplayerMode)
     {
         game_ball.move((ballVeloX * 10) * time.asSeconds(), (ballVeloY * 10) * time.asSeconds());
         // AI controls
         if (Keyboard::isKeyPressed(Keyboard::Up) && game_playerPaddle.getPosition().y > 0)
         {
-            game_playerPaddle.move(0, -varCpuVelocity * time.asSeconds());
+            game_playerPaddle.move(0, -(varCpuVelocity * 10) * time.asSeconds());
         }
         if (Keyboard::isKeyPressed(Keyboard::Down) && game_playerPaddle.getPosition().y < game_window.getSize().y - game_playerPaddle.getSize().y)
         {
-            game_playerPaddle.move(0, varCpuVelocity * time.asSeconds());
+            game_playerPaddle.move(0, (varCpuVelocity * 10) * time.asSeconds());
         }
+        // cpu paddle movement
         if (game_ball.getPosition().y > game_cpuPaddle.getPosition().y)
         {
-            game_cpuPaddle.move(0, varCpuVelocity * (time.asSeconds()));
+            game_cpuPaddle.move(0, (varCpuVelocity * 10) * (time.asSeconds()));
         }
         else
         {
-            game_cpuPaddle.move(0, -varCpuVelocity * (time.asSeconds()));
+            game_cpuPaddle.move(0, -(varCpuVelocity * 10) * (time.asSeconds()));
         }
+
+        //collision with paddle
         if (game_ball.getGlobalBounds().intersects(game_playerPaddle.getGlobalBounds()))
         {
             game_ball.move(-ballVeloX * time.asSeconds(), -ballVeloY * time.asSeconds());
@@ -546,7 +547,7 @@ void Game::update(Time time)
             if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius() * 2)
             {
                 game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
-                ballVeloY *= -1;
+                game_ballVelocityY *= -1;
             }
         }
     }
