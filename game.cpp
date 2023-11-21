@@ -14,8 +14,8 @@ Game ::Game()
     game_backgroundColor = Color ::Black;
     game_paddleColor = Color ::White;
     game_ballColor = Color ::White;
-    game_playerPaddle.setSize(Vector2f(25, 75));
-    game_cpuPaddle.setSize(Vector2f(25, 75));
+    game_playerPaddle.setSize(Vector2f(5, 75));
+    game_cpuPaddle.setSize(Vector2f(5, 75));
     game_ball.setRadius(15);
     int windowWidth = 1280; // Default width
     int windowHeight = 800; // Default height
@@ -39,10 +39,10 @@ Game ::Game()
     game_window.setPosition(sf::Vector2i(static_cast<int>(centerX), static_cast<int>(centerY)));
     // setting up player paddle
     game_playerPaddle.setFillColor(game_paddleColor);
-    game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
+    game_playerPaddle.setPosition(20.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
     // setting up cpu paddle
     game_cpuPaddle.setFillColor(game_paddleColor);
-    game_cpuPaddle.setPosition(game_window.getSize().x - 35.f, game_window.getSize().y / 2 - game_cpuPaddle.getSize().y / 2);
+    game_cpuPaddle.setPosition(game_window.getSize().x - 25.f, game_window.getSize().y / 2 - game_cpuPaddle.getSize().y / 2);
     // setting up pong ball
     game_ball.setFillColor(game_ballColor);
     game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
@@ -379,8 +379,8 @@ void Game ::resetGame()
     updatelifeText();
     // updatescore();
     game_window.draw(game_cpuPaddle);
-    game_cpuPaddle.setPosition(game_window.getSize().x - 35.f, game_window.getSize().y / 2 - game_cpuPaddle.getSize().y / 2);
-    game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
+    game_cpuPaddle.setPosition(game_window.getSize().x - 25.f, game_window.getSize().y / 2 - game_cpuPaddle.getSize().y / 2);
+    game_playerPaddle.setPosition(20.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
 
     game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
 }
@@ -412,15 +412,15 @@ void Game::update(Time time)
         // collision with paddle
         if (game_ball.getGlobalBounds().intersects(game_playerPaddle.getGlobalBounds()))
         {
+            sound.play();
             game_ball.move(-ballVeloX * time.asSeconds(), -ballVeloY * time.asSeconds());
             ballVeloX *= -1;
-            sound.play();
         }
         if (game_ball.getGlobalBounds().intersects(game_cpuPaddle.getGlobalBounds()))
         {
+            sound.play();
             game_ball.move(-ballVeloX * time.asSeconds(), -ballVeloY * time.asSeconds());
             ballVeloX *= -1;
-            sound.play();
         }
 
         // Check for collision with top wall
