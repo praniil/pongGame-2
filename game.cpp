@@ -108,14 +108,6 @@ bool Game::isWindowOpen()
     return game_window.isOpen();
 }
 
-// start button
-void Game::setupButtons()
-{
-    updateButtonPositions();
-    startBtn.setButton(buttonPosX, buttonPosY, buttonWidth, buttonHeight, "Start", game_font, [this]()
-                       { gameStarted = true; });
-}
-
 void Game ::setupMultiplayerButton()
 {
     updateButtonPositions();
@@ -161,7 +153,6 @@ void Game::updateButtonPositions()
 
 void Game::handleMultiplayerButtonClick()
 {
-    cout << "multiplayer btn clicked ";
     multiplayerMode = true;
     Time time = game_clock.restart();
     while (multiplayerMode && game_window.isOpen())
@@ -194,9 +185,6 @@ void Game::handleMultiplayerButtonClick()
         update(time);
         game_window.display();
     }
-    // update(time);
-    // renderMultiplayer();
-    // game_window.display();
 }
 
 void Game::handleLevelSelection()
@@ -258,7 +246,6 @@ void Game::handleLevelSelection()
 
 void Game::run()
 {
-    setupButtons();
     setupLevelButtons();
     setupMultiplayerButton();
     gameStarted = false;
@@ -282,13 +269,7 @@ void Game::run()
             else if (!gameStarted)
             {
                 sf::Vector2f mousePosition = game_window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-
-                if (startBtn.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
-                {
-                    gameStarted = true;
-                    // handleStartButtonClick();
-                }
-                else if (multiplayer.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
+                if (multiplayer.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
                 {
 
                     multiplayerMode = true;
@@ -360,9 +341,8 @@ void Game::run()
             update(time);
         }
 
-        if ( !levelSelected)
+        if (!levelSelected)
         {
-            // startBtn.draw(game_window);
             level1.drawButton(game_window);
             level2.drawButton(game_window);
             level3.drawButton(game_window);
@@ -372,7 +352,7 @@ void Game::run()
             handleLevelSelection();
             levelSelected = true;
         }
-        else if ( levelSelected)
+        else if (levelSelected)
         {
             if (life <= 0)
             {
@@ -401,7 +381,6 @@ void Game ::resetGame()
     game_window.draw(game_cpuPaddle);
     game_cpuPaddle.setPosition(game_window.getSize().x - 35.f, game_window.getSize().y / 2 - game_cpuPaddle.getSize().y / 2);
     game_playerPaddle.setPosition(10.f, game_window.getSize().y / 2 - game_playerPaddle.getSize().y / 2);
-    cout << (game_cpuPaddle.getPosition().x, game_cpuPaddle.getPosition().y);
 
     game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
 }
@@ -699,7 +678,6 @@ void Game::render()
 }
 void Game::renderMultiplayer()
 {
-    cout << "in render multiplayer" << endl;
     game_window.clear(game_backgroundColor);
     game_window.draw(game_playerPaddle);
     game_window.draw(game_cpuPaddle);
@@ -710,6 +688,5 @@ void Game::renderMultiplayer()
     infoMulitplayer.setString("Who ever gets the quickest 5 scores wins!");
     game_score1text.setString("Player1: " + to_string(game_score1));
     game_score2text.setString("Player2: " + to_string(game_score2));
-    cout << "hey am i drawn?";
     game_window.display();
 }

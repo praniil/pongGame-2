@@ -6,7 +6,6 @@ int main()
 {
     Game game;
     sf::Clock clock;
-    game.setupButtons();
 
     while (game.isRunning())
     {
