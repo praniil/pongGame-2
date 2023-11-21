@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "button.h"
 #include "game.h"
 #include <iostream>
@@ -46,6 +47,10 @@ Game ::Game()
 
     // font
     game_font.loadFromFile("arial.ttf");
+
+    //sound
+    soundBuffer.loadFromFile("pongEdited.wav");
+    sound.setBuffer(soundBuffer);
 
     // life
     game_lifetext.setFont(game_font);
@@ -401,11 +406,13 @@ void Game::update(Time time)
     {
         game_ball.move(-ballVeloX * time.asSeconds(), -ballVeloY * time.asSeconds());
         ballVeloX *= -1;
+        sound.play();
     }
     if (game_ball.getGlobalBounds().intersects(game_cpuPaddle.getGlobalBounds()))
     {
         game_ball.move(-ballVeloX * time.asSeconds(), -ballVeloY * time.asSeconds());
         ballVeloX *= -1;
+        sound.play();
     }
 
     // Check for collision with top wall

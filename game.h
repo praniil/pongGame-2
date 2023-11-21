@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "button.h"
 using namespace sf;
 
@@ -39,6 +40,8 @@ private:
     RectangleShape game_playerPaddle;
     RectangleShape game_cpuPaddle;
     CircleShape game_ball;
+    SoundBuffer soundBuffer;
+    Sound sound;
 
     float game_ballVelocityX; // it has two public members x and y , they are the component of 2D vector
     float game_ballVelocityY; // it has two public members x and y , they are the component of 2D vector
