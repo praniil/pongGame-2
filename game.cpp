@@ -296,6 +296,7 @@ void Game::run()
                 }
                 else if (level1.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
                 {
+                    gameStarted = true;
                     levelSelected = true;
                     varCpuVelocity = 700;
                     ballVeloX = 700;
@@ -303,6 +304,7 @@ void Game::run()
                 }
                 else if (level2.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
                 {
+                    gameStarted = true;
                     levelSelected = true;
                     varCpuVelocity = 1000;
                     ballVeloX = 1000;
@@ -310,6 +312,7 @@ void Game::run()
                 }
                 else if (level3.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
                 {
+                    gameStarted = true;
                     levelSelected = true;
                     varCpuVelocity = 1200;
                     ballVeloX = 1200;
@@ -357,19 +360,19 @@ void Game::run()
             update(time);
         }
 
-        if (!gameStarted && !levelSelected)
+        if ( !levelSelected)
         {
-            startBtn.draw(game_window);
+            // startBtn.draw(game_window);
             level1.drawButton(game_window);
             level2.drawButton(game_window);
             level3.drawButton(game_window);
         }
-        else if (gameStarted && !levelSelected)
+        else if (!levelSelected)
         {
             handleLevelSelection();
             levelSelected = true;
         }
-        else if (gameStarted && levelSelected)
+        else if ( levelSelected)
         {
             if (life <= 0)
             {

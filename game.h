@@ -22,7 +22,7 @@ public:
     void setupLevelButtons();
     void setupMultiplayerButton();
     void handleMultiplayerButtonClick();
-
+    int loadSoundFile();
 private:
     bool gameStarted;
     bool levelSelected;
