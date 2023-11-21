@@ -1,9 +1,18 @@
 #include <SFML/Graphics.hpp>
 #include "game.h"
 #include <iostream>
-using namespace std;
 
-int main () {
+int main()
+{
     Game game;
-    game.run();
+    sf::Clock clock;
+    game.setupButtons();
+
+    while (game.isRunning())
+    {
+        sf::Time deltaTime = clock.restart();
+        game.run();
+    }
+
+    return 0;
 }
