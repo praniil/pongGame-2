@@ -12,6 +12,7 @@ public:
     bool isRunning() const;
     void update(Time time);
     void render();
+    void renderMultiplayer();
     void run();
     void updateButtonPositions();
     void handleStartButtonClick();
