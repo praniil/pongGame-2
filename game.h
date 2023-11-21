@@ -28,6 +28,8 @@ private:
     void resetGame();
     void updatelifeText();
     void updatescore();
+    void updateScore1();
+    void updateScore2();
     // for highscore
     void loadHighscore();
     void saveHighscore();
@@ -50,6 +52,8 @@ private:
     int life;
     int game_highscore;
     int game_score;
+    int game_score1;
+    int game_score2;
     int varCpuVelocity;
     int ballVeloX;
     int ballVeloY;
@@ -66,6 +70,8 @@ private:
     Text game_lifetext;
     Text game_highscoretext;
     Text game_scoretext;
+    Text game_score1text;
+    Text game_score2text;
 
     Clock game_clock;
     Button closeBtn;
