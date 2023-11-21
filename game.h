@@ -3,6 +3,8 @@
 #include <SFML/Audio.hpp>
 #include "button.h"
 using namespace sf;
+using namespace std;
+#include<string>
 
 class Game
 {
@@ -65,6 +67,7 @@ private:
     int buttonPosX;
     int buttonPosY;
     int startY;
+    string infoMultiplayerString;
 
     Font game_font;
     Text game_lifetext;
@@ -72,6 +75,7 @@ private:
     Text game_scoretext;
     Text game_score1text;
     Text game_score2text;
+    Text infoMulitplayer;
 
     Clock game_clock;
     Button closeBtn;

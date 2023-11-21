@@ -79,14 +79,18 @@ Game ::Game()
     game_score1text.setCharacterSize(36);
     game_score1text.setFillColor(Color::Cyan);
     game_score1text.setPosition(20.f, 10.f);
-    game_score1text.setString("Player 1 Score: " + std::to_string(game_score1));
 
     // gameScore2
     game_score2text.setFont(game_font);
     game_score2text.setCharacterSize(36);
     game_score2text.setFillColor(Color::Cyan);
     game_score2text.setPosition(game_window.getSize().x / 2 + game_window.getSize().x / 4, 10.f);
-    game_score2text.setString("Player 1 Score: " + std::to_string(game_score1));
+    // info Multiplayer
+    infoMulitplayer.setFont(game_font);
+    infoMulitplayer.setCharacterSize(25);
+    infoMulitplayer.setFillColor(Color ::White);
+    infoMulitplayer.setPosition(game_window.getSize().x / 2 - game_window.getSize().x / 3, game_window.getSize().y - 30.f);
+
     gameStarted = false;
     levelSelected = false;
     multiplayerMode = false;
@@ -699,6 +703,8 @@ void Game::renderMultiplayer()
     game_window.draw(game_ball);
     game_window.draw(game_score1text);
     game_window.draw(game_score2text);
+    game_window.draw(infoMulitplayer);
+    infoMulitplayer.setString("Who ever gets the quickest 5 scores wins!");
     game_score1text.setString("Player1: " + to_string(game_score1));
     game_score2text.setString("Player2: " + to_string(game_score2));
     cout << "hey am i drawn?";
