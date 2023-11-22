@@ -54,10 +54,29 @@ Game ::Game()
     soundBuffer.loadFromFile("pongEdited.wav");
     sound.setBuffer(soundBuffer);
 
+    // background
+    if (!backgroundTexture.loadFromFile("mercBackground.jpg"))
+    {
+        game_backgroundColor = Color ::Black;
+    }
+    backgroundSprite.setTexture(backgroundTexture);
+    backgroundSprite.setScale(
+        static_cast<float>(game_window.getSize().x) / backgroundSprite.getLocalBounds().width,
+        static_cast<float>(game_window.getSize().y) / backgroundSprite.getLocalBounds().height);
+    // game bg
+    // if (!gameTexture.loadFromFile("gameBg.jpg"))
+    // {
+    //     game_backgroundColor = Color ::Black;
+    // }
+    // gameSprite.setTexture(gameTexture);
+    // gameSprite.setScale(
+    //     static_cast<float>(game_window.getSize().x) / gameSprite.getLocalBounds().width,
+    //     static_cast<float>(game_window.getSize().y) / gameSprite.getLocalBounds().height);
+
     // life
     game_lifetext.setFont(game_font);
     game_lifetext.setCharacterSize(36);
-    game_lifetext.setFillColor(Color ::Green);
+    game_lifetext.setFillColor(Color ::White);
 
     game_lifetext.setPosition(game_window.getSize().x / 2, 10.f);
     game_lifetext.setString("Life: " + to_string(life));
@@ -65,13 +84,13 @@ Game ::Game()
     // highscore
     game_highscoretext.setFont(game_font);
     game_highscoretext.setCharacterSize(36);
-    game_highscoretext.setFillColor(Color::Cyan);
+    game_highscoretext.setFillColor(Color::White);
     game_highscoretext.setPosition(20.f, 10.f);
 
     // gameScore
     game_scoretext.setFont(game_font);
     game_scoretext.setCharacterSize(36);
-    game_scoretext.setFillColor(Color::Cyan);
+    game_scoretext.setFillColor(Color::White);
     game_scoretext.setPosition(game_window.getSize().x / 2 + game_window.getSize().x / 4, 10.f);
 
     // gameScore1
@@ -98,7 +117,6 @@ Game ::Game()
     // updateHighscore();
 }
 
-// close and restart buttons
 bool Game::isRunning() const
 {
     return game_window.isOpen();
@@ -330,6 +348,14 @@ void Game::run()
         }
         game_window.clear(Color::Black);
 
+        if (!multiplayerMode || !levelSelected)
+        {
+            game_window.draw(backgroundSprite);
+            level1.drawButton(game_window);
+            level2.drawButton(game_window);
+            level3.drawButton(game_window);
+            multiplayer.drawButton(game_window);
+        }
         if (!multiplayerMode)
         {
             multiplayer.drawButton(game_window);
@@ -340,7 +366,6 @@ void Game::run()
             renderMultiplayer();
             update(time);
         }
-
         if (!levelSelected)
         {
             level1.drawButton(game_window);
@@ -501,20 +526,20 @@ void Game::update(Time time)
             resetGame();
             multiplayerMode = false;
         }
-        if (Keyboard::isKeyPressed(Keyboard::Up) && game_playerPaddle.getPosition().y > 0)
+        if (Keyboard::isKeyPressed(Keyboard::W) && game_playerPaddle.getPosition().y > 0)
         {
             game_playerPaddle.move(0, -1200 * time.asSeconds());
         }
-        if (Keyboard::isKeyPressed(Keyboard::Down) && game_playerPaddle.getPosition().y < game_window.getSize().y - game_playerPaddle.getSize().y)
+        if (Keyboard::isKeyPressed(Keyboard::S) && game_playerPaddle.getPosition().y < game_window.getSize().y - game_playerPaddle.getSize().y)
         {
             game_playerPaddle.move(0, 1200 * time.asSeconds());
         }
         // Player 2 controls: W and S keys
-        if (Keyboard::isKeyPressed(Keyboard::W) && game_cpuPaddle.getPosition().y > 0)
+        if (Keyboard::isKeyPressed(Keyboard::Up) && game_cpuPaddle.getPosition().y > 0)
         {
             game_cpuPaddle.move(0, -1200 * time.asSeconds());
         }
-        if (Keyboard::isKeyPressed(Keyboard::S) && game_cpuPaddle.getPosition().y < game_window.getSize().y - game_cpuPaddle.getSize().y)
+        if (Keyboard::isKeyPressed(Keyboard::Down) && game_cpuPaddle.getPosition().y < game_window.getSize().y - game_cpuPaddle.getSize().y)
         {
             game_cpuPaddle.move(0, 1200 * time.asSeconds());
         }
@@ -664,6 +689,7 @@ void Game ::updateScore2()
 void Game::render()
 {
     game_window.clear(game_backgroundColor);
+    game_window.draw(gameSprite);
     game_window.draw(game_playerPaddle);
     game_window.draw(game_cpuPaddle);
     game_window.draw(game_ball);
@@ -673,12 +699,11 @@ void Game::render()
     // updatescore();
     game_highscoretext.setString("High Score: " + to_string(game_highscore));
     game_window.draw(game_highscoretext);
-
-    game_window.display();
 }
 void Game::renderMultiplayer()
 {
     game_window.clear(game_backgroundColor);
+    game_window.draw(gameSprite);
     game_window.draw(game_playerPaddle);
     game_window.draw(game_cpuPaddle);
     game_window.draw(game_ball);

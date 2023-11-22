@@ -10,6 +10,7 @@ int main()
     while (game.isRunning())
     {
         sf::Time deltaTime = clock.restart();
+        game.render();
         game.run();
     }
 

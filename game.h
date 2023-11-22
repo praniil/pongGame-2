@@ -4,7 +4,7 @@
 #include "button.h"
 using namespace sf;
 using namespace std;
-#include<string>
+#include <string>
 
 class Game
 {
@@ -15,14 +15,13 @@ public:
     void update(Time time);
     void render();
     void renderMultiplayer();
+    void renderBackground();
     void run();
     void updateButtonPositions();
-    void handleStartButtonClick();
-    void setupButtons();
     void setupLevelButtons();
     void setupMultiplayerButton();
     void handleMultiplayerButtonClick();
-    int loadSoundFile();
+
 private:
     bool gameStarted;
     bool levelSelected;
@@ -37,6 +36,7 @@ private:
     void saveHighscore();
     void updateHighscore();
     void handleLevelSelection();
+    void toggleFullscreen();
 
     RenderWindow game_window;
     Color game_backgroundColor;
@@ -47,6 +47,10 @@ private:
     CircleShape game_ball;
     SoundBuffer soundBuffer;
     Sound sound;
+    Texture backgroundTexture;
+    Sprite backgroundSprite;
+    Texture gameTexture;
+    Sprite gameSprite;
 
     float game_ballVelocityX; // it has two public members x and y , they are the component of 2D vector
     float game_ballVelocityY; // it has two public members x and y , they are the component of 2D vector
@@ -59,7 +63,7 @@ private:
     int varCpuVelocity;
     int ballVeloX;
     int ballVeloY;
-    int windowWidth; // Default width
+    int windowWidth;  // Default width
     int windowHeight; // Default height
     int buttonWidth;
     int buttonHeight;
