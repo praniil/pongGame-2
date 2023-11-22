@@ -25,15 +25,12 @@ Game ::Game()
     game_score = 0;
     game_score1 = 0;
     game_score2 = 0;
-    life = 2;
+    life = 3;
     game_highscore = 0;
 
     // game window
-    // game_window.create(VideoMode::getFullscreenModes()[0], "Pong Game");
 
     VideoMode screenResolution = VideoMode ::getDesktopMode();
-    // float centerX = (static_cast<float>(screenResolution.width) - game_window.getSize().x) / 2;
-    // float centerY = (static_cast<float>(screenResolution.height) - game_window.getSize().y) / 2;
 
     game_window.create(VideoMode::getFullscreenModes()[0], "Pong Game");
     game_window.setPosition(Vector2i(0, 0));
@@ -61,18 +58,6 @@ Game ::Game()
         game_backgroundColor = Color ::Black;
     }
     backgroundSprite.setTexture(backgroundTexture);
-    // backgroundSprite.setScale(
-    //     static_cast<float>(game_window.getSize().x) / backgroundSprite.getLocalBounds().width,
-    //     static_cast<float>(game_window.getSize().y) / backgroundSprite.getLocalBounds().height);
-    // game bg
-    // if (!gameTexture.loadFromFile("gameBg.jpg"))
-    // {
-    //     game_backgroundColor = Color ::Black;
-    // }
-    // gameSprite.setTexture(gameTexture);
-    // gameSprite.setScale(
-    //     static_cast<float>(game_window.getSize().x) / gameSprite.getLocalBounds().width,
-    //     static_cast<float>(game_window.getSize().y) / gameSprite.getLocalBounds().height);
 
     // life
     game_lifetext.setFont(game_font);
@@ -114,7 +99,6 @@ Game ::Game()
     gameStarted = false;
     levelSelected = false;
     multiplayerMode = false;
-    closeMode = false;
     loadHighscore();
     // updateHighscore();
 }
@@ -126,22 +110,6 @@ bool Game::isRunning() const
 bool Game::isWindowOpen()
 {
     return game_window.isOpen();
-}
-void Game::setupCloseButton () {
-    sf::VideoMode fullscreenMode = sf::VideoMode::getFullscreenModes()[0]; // Get the fullscreen mode
-    int windowWidth = fullscreenMode.width;
-    int windowHeight = fullscreenMode.height;
-
-    int buttonWidth = windowWidth / 8;
-    int buttonHeight = windowHeight / 16;
-    int buttonSpacing = windowHeight / 24;
-
-    int buttonPosX = windowWidth / 10;
-    int buttonPosY = windowHeight / 4;
-    int startY = windowHeight / 3;
-
-    multiplayer.setButton((windowWidth - buttonWidth) / 2, startY + 4 * (buttonHeight + buttonSpacing), buttonWidth, buttonHeight, "Close", game_font, [this]()
-                          { closeMode = true; });
 }
 
 void Game::setupMultiplayerButton()
@@ -193,22 +161,10 @@ void Game::setupLevelButtons()
         varCpuVelocity = 1000;
         ballVeloX = 660;
         ballVeloY = 660; });
+
+    closeButton.setButton((windowWidth - buttonWidth) / 2, startY + 4 * (buttonHeight + buttonSpacing), buttonWidth, buttonHeight, "Close", game_font, [this]()
+                          { game_window.close(); });
 }
-
-// void Game::updateButtonPositions()
-// {
-//     windowWidth = game_window.getSize().x;
-//     windowHeight = game_window.getSize().y;
-
-//     buttonWidth = windowWidth / 8;
-//     buttonHeight = windowHeight / 16;
-//     buttonSpacing = windowHeight / 24;
-
-//     buttonPosX = windowWidth / 10;
-//     buttonPosY = windowHeight / 4;
-//     startY = windowHeight / 3;
-// }
-
 void Game::handleMultiplayerButtonClick()
 {
     multiplayerMode = true;
@@ -222,10 +178,6 @@ void Game::handleMultiplayerButtonClick()
             {
                 game_window.close();
             }
-            // if (event.type == sf::Event::Resized)
-            // {
-            //     updateButtonPositions();
-            // }
             if (event.type == Event::MouseButtonPressed)
             {
                 if (event.mouseButton.button == Mouse::Left)
@@ -258,10 +210,6 @@ void Game::handleLevelSelection()
             {
                 game_window.close();
             }
-            // if (event.type == sf::Event::Resized)
-            // {
-            //     updateButtonPositions();
-            // }
             if (event.type == Event::MouseButtonPressed)
             {
                 if (event.mouseButton.button == Mouse::Left)
@@ -320,10 +268,6 @@ void Game::run()
             {
                 game_window.close();
             }
-            // else if (event.type == sf::Event::Resized)
-            // {
-            //     updateButtonPositions();
-            // }
             else if (!gameStarted)
             {
                 sf::Vector2f mousePosition = game_window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
@@ -332,6 +276,10 @@ void Game::run()
 
                     multiplayerMode = true;
                     handleMultiplayerButtonClick();
+                }
+                else if (closeButton.isButtonClicked(mousePosition) && event.type == Event::MouseButtonReleased)
+                {
+                    game_window.close();
                 }
                 else if (level1.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
                 {
@@ -366,10 +314,7 @@ void Game::run()
             {
                 game_window.close();
             }
-            // if (event.type == sf::Event::Resized)
-            // {
-            //     updateButtonPositions();
-            // }
+
             if (event.type == Event::MouseButtonPressed)
             {
                 if (event.mouseButton.button == Mouse::Left)
@@ -395,6 +340,7 @@ void Game::run()
             level2.drawButton(game_window);
             level3.drawButton(game_window);
             multiplayer.drawButton(game_window);
+            closeButton.drawButton(game_window);
         }
         if (!multiplayerMode)
         {
@@ -440,7 +386,7 @@ void Game ::resetGame()
     game_score = 0;
     game_score1 = 0;
     game_score2 = 0;
-    life = 2;
+    life = 3;
     updatelifeText();
     // updatescore();
     game_window.draw(game_cpuPaddle);
@@ -495,17 +441,6 @@ void Game::update(Time time)
             ballVeloY *= -1;
         }
 
-        // Check for collision with bottom wall
-        // if (game_window.getSize().y > 800)
-        // {
-        //     if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius() * 15)
-        //     {
-        //         game_ball.move(ballVeloX * time.asSeconds(), -ballVeloY * time.asSeconds());
-        //         ballVeloY *= -1;
-        //     }
-        // }
-        // else
-
         if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius())
         {
             game_ball.move(ballVeloX * time.asSeconds(), -ballVeloY * time.asSeconds());
@@ -528,23 +463,6 @@ void Game::update(Time time)
             game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
             ballVeloX *= -1;
         }
-
-        // if (game_window.getSize().x > 1280)
-        // {
-        //     if (game_ball.getPosition().x > game_window.getSize().x - game_window.getSize().x / 3 - game_ball.getRadius() - 2.f)
-        //     {
-        //         // Ball hit the right wall, reset its position and reverse the horizontal velocity
-        //         if (life > 0)
-        //         {
-        //             game_score += 1;
-        //             updatescore();
-        //         }
-
-        //         game_ball.setPosition(game_window.getSize().x / 2 - game_window.getSize().x / 5, game_window.getSize().y / 2 - game_window.getSize().y / 5);
-        //         ballVeloX *= -1;
-        //         updateHighscore();
-        //     }
-        // }
         if (game_ball.getPosition().x > game_window.getSize().x - game_ball.getRadius() * 2)
         {
             // Ball hit the right wall, reset its position and reverse the horizontal velocity
@@ -559,7 +477,7 @@ void Game::update(Time time)
     }
     else
     {
-        if (game_score1 >= 5 || game_score2 >= 5)
+        if (game_score1 >= 3 || game_score2 >= 3)
         {
             resetGame();
             multiplayerMode = false;
@@ -581,7 +499,7 @@ void Game::update(Time time)
         {
             game_cpuPaddle.move(0, 1200 * time.asSeconds());
         }
-        game_ball.move(game_ballVelocityX * time.asSeconds(), game_ballVelocityY * time.asSeconds());
+        game_ball.move((game_ballVelocityX * 1.45) * time.asSeconds(), (game_ballVelocityY * 1.45) * time.asSeconds());
 
         // Check collision with paddle
         if (game_ball.getGlobalBounds().intersects(game_playerPaddle.getGlobalBounds()))
@@ -603,18 +521,6 @@ void Game::update(Time time)
             game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
             game_ballVelocityY *= -1;
         }
-
-        // Check for collision with bottom wall
-        // if (game_window.getSize().y > 800)
-        // {
-        //     if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius() * 15)
-        //     {
-        //         game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
-        //         game_ballVelocityY *= -1;
-        //     }
-        // }
-        // else
-
         if (game_ball.getPosition().y > game_window.getSize().y - game_ball.getRadius())
         {
             game_ball.move(game_ballVelocityX * time.asSeconds(), -game_ballVelocityY * time.asSeconds());
@@ -625,7 +531,7 @@ void Game::update(Time time)
         if (game_ball.getPosition().x < 0)
         {
             // Ball hit the left wall, reset its position and reverse the horizontal velocity
-            if (game_score2 < 5)
+            if (game_score2 < 3)
             {
                 game_score2 = game_score2 + 1;
                 updateScore2();
@@ -639,28 +545,9 @@ void Game::update(Time time)
             game_ballVelocityX *= -1;
         }
 
-        // if (game_window.getSize().x > 1280)
-        // {
-        //     if (game_ball.getPosition().x > game_window.getSize().x - game_window.getSize().x / 3 - game_ball.getRadius() - 2.f)
-        //     {
-        //         if (game_score1 < 5)
-        //         {
-        //             game_score1 = game_score1 + 1;
-        //             updateScore1();
-        //         }
-        //         else
-        //         {
-        //             resetGame();
-        //             game_window.clear(Color::Black);
-        //         }
-
-        //         game_ball.setPosition(game_window.getSize().x / 2 - game_ball.getRadius(), game_window.getSize().y / 2 - game_ball.getRadius());
-        //         game_ballVelocityX *= -1;
-        //     }
-        // }
         if (game_ball.getPosition().x > game_window.getSize().x - game_ball.getRadius() - 2.f)
         {
-            if (game_score1 < 5)
+            if (game_score1 < 3)
             {
                 game_score1 = game_score1 + 1;
                 updateScore1();
@@ -725,7 +612,7 @@ void Game ::updateScore2()
 void Game::render()
 {
     game_window.clear(game_backgroundColor);
-    game_window.draw(gameSprite);
+    game_window.draw(backgroundSprite);
     game_window.draw(game_playerPaddle);
     game_window.draw(game_cpuPaddle);
     game_window.draw(game_ball);
@@ -739,14 +626,14 @@ void Game::render()
 void Game::renderMultiplayer()
 {
     game_window.clear(game_backgroundColor);
-    game_window.draw(gameSprite);
+    game_window.draw(backgroundSprite);
     game_window.draw(game_playerPaddle);
     game_window.draw(game_cpuPaddle);
     game_window.draw(game_ball);
     game_window.draw(game_score1text);
     game_window.draw(game_score2text);
     game_window.draw(infoMulitplayer);
-    infoMulitplayer.setString("Who ever gets the quickest 5 scores wins!");
+    infoMulitplayer.setString("Who ever gets the quickest 3 scores wins!");
     game_score1text.setString("Player1: " + to_string(game_score1));
     game_score2text.setString("Player2: " + to_string(game_score2));
     game_window.display();
