@@ -15,7 +15,7 @@ void Button::setButton(float x, float y, float width, float height, std::string 
 {
     shape.setSize(sf::Vector2f(width, height));
     shape.setPosition(x, y);
-    shape.setFillColor(sf::Color::Green); // Customize button color as needed
+    shape.setFillColor(sf::Color::Black); // Customize button color as needed
 
     text.setFont(buttonFont);
     text.setString(buttonText);
