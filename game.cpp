@@ -114,6 +114,7 @@ Game ::Game()
     gameStarted = false;
     levelSelected = false;
     multiplayerMode = false;
+    closeMode = false;
     loadHighscore();
     // updateHighscore();
 }
@@ -125,6 +126,22 @@ bool Game::isRunning() const
 bool Game::isWindowOpen()
 {
     return game_window.isOpen();
+}
+void Game::setupCloseButton () {
+    sf::VideoMode fullscreenMode = sf::VideoMode::getFullscreenModes()[0]; // Get the fullscreen mode
+    int windowWidth = fullscreenMode.width;
+    int windowHeight = fullscreenMode.height;
+
+    int buttonWidth = windowWidth / 8;
+    int buttonHeight = windowHeight / 16;
+    int buttonSpacing = windowHeight / 24;
+
+    int buttonPosX = windowWidth / 10;
+    int buttonPosY = windowHeight / 4;
+    int startY = windowHeight / 3;
+
+    multiplayer.setButton((windowWidth - buttonWidth) / 2, startY + 4 * (buttonHeight + buttonSpacing), buttonWidth, buttonHeight, "Close", game_font, [this]()
+                          { closeMode = true; });
 }
 
 void Game::setupMultiplayerButton()
