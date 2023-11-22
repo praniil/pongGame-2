@@ -53,7 +53,7 @@ Game ::Game()
     sound.setBuffer(soundBuffer);
 
     // background
-    if (!backgroundTexture.loadFromFile("mercBackground.jpg"))
+    if (!backgroundTexture.loadFromFile("gameBg.jpg"))
     {
         game_backgroundColor = Color ::Black;
     }
