@@ -10,15 +10,15 @@ class Game
 {
 public:
     Game();
-    bool isWindowOpen();
+    // bool isWindowOpen();
     bool isRunning() const;
     void update(Time time);
     void render();
     void renderMultiplayer();
-    void renderBackground();
+    // void renderBackground();
     void run();
-    void updateButtonPositions();
-    void setupCloseButton();
+    // void updateButtonPositions();
+    // void setupCloseButton();
     void setupLevelButtons();
     void setupMultiplayerButton();
     void handleMultiplayerButtonClick();
@@ -38,7 +38,7 @@ private:
     void saveHighscore();
     void updateHighscore();
     void handleLevelSelection();
-    void toggleFullscreen();
+    // void toggleFullscreen();
 
     RenderWindow game_window;
     Color game_backgroundColor;

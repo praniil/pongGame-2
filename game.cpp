@@ -107,10 +107,10 @@ bool Game::isRunning() const
 {
     return game_window.isOpen();
 }
-bool Game::isWindowOpen()
-{
-    return game_window.isOpen();
-}
+// bool Game::isWindowOpen()
+// {
+//     return game_window.isOpen();
+// }
 
 void Game::setupMultiplayerButton()
 {
@@ -221,21 +221,21 @@ void Game::handleLevelSelection()
                     if (level1.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
-                        varCpuVelocity = 700;
+                        varCpuVelocity = 625;
                         ballVeloX = 700;
                         ballVeloY = 700;
                     }
                     if (level2.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
-                        varCpuVelocity = 1000;
+                        varCpuVelocity = 950;
                         ballVeloX = 1000;
                         ballVeloY = 1000;
                     }
                     if (level3.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
-                        varCpuVelocity = 1200;
+                        varCpuVelocity = 1100;
                         ballVeloX = 1200;
                         ballVeloY = 1200;
                     }
@@ -285,7 +285,7 @@ void Game::run()
                 {
                     gameStarted = true;
                     levelSelected = true;
-                    varCpuVelocity = 700;
+                    varCpuVelocity = 625;
                     ballVeloX = 700;
                     ballVeloY = 700;
                 }
@@ -293,7 +293,7 @@ void Game::run()
                 {
                     gameStarted = true;
                     levelSelected = true;
-                    varCpuVelocity = 1000;
+                    varCpuVelocity = 950;
                     ballVeloX = 1000;
                     ballVeloY = 1000;
                 }
@@ -301,7 +301,7 @@ void Game::run()
                 {
                     gameStarted = true;
                     levelSelected = true;
-                    varCpuVelocity = 1200;
+                    varCpuVelocity = 1100;
                     ballVeloX = 1200;
                     ballVeloY = 1200;
                 }
