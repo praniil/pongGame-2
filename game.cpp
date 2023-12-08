@@ -49,8 +49,10 @@ Game ::Game()
     game_font.loadFromFile("arial.ttf");
 
     // sound
-    soundBuffer.loadFromFile("pongEdited.wav");
-    sound.setBuffer(soundBuffer);
+    // soundBuffer.loadFromFile("pongEdited.wav");
+    // sound.setBuffer(soundBuffer);
+        soundBuffer.loadFromFile("pongSound2.wav");
+        sound.setBuffer(soundBuffer);
 
     // background
     if (!backgroundTexture.loadFromFile("gameBg.jpg"))
