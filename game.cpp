@@ -221,23 +221,23 @@ void Game::handleLevelSelection()
                     if (level1.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
-                        varCpuVelocity = 625;
-                        ballVeloX = 700;
-                        ballVeloY = 700;
+                        varCpuVelocity = 540;
+                        ballVeloX = 550;
+                        ballVeloY = 550;
                     }
                     if (level2.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
-                        varCpuVelocity = 950;
-                        ballVeloX = 1000;
-                        ballVeloY = 1000;
+                        varCpuVelocity = 640;
+                        ballVeloX = 650;
+                        ballVeloY = 650;
                     }
                     if (level3.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
-                        varCpuVelocity = 1100;
-                        ballVeloX = 1200;
-                        ballVeloY = 1200;
+                        varCpuVelocity = 800;
+                        ballVeloX = 800;
+                        ballVeloY = 800;
                     }
                 }
             }
@@ -285,25 +285,25 @@ void Game::run()
                 {
                     gameStarted = true;
                     levelSelected = true;
-                    varCpuVelocity = 625;
-                    ballVeloX = 700;
-                    ballVeloY = 700;
+                    varCpuVelocity = 540;
+                    ballVeloX = 550;
+                    ballVeloY = 550;
                 }
                 else if (level2.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
                 {
                     gameStarted = true;
                     levelSelected = true;
-                    varCpuVelocity = 950;
-                    ballVeloX = 1000;
-                    ballVeloY = 1000;
+                    varCpuVelocity = 640;
+                    ballVeloX = 650;
+                    ballVeloY = 650;
                 }
                 else if (level3.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
                 {
                     gameStarted = true;
                     levelSelected = true;
-                    varCpuVelocity = 1100;
-                    ballVeloX = 1200;
-                    ballVeloY = 1200;
+                    varCpuVelocity = 800;
+                    ballVeloX = 800;
+                    ballVeloY = 800;
                 }
             }
         }
