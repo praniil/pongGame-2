@@ -433,11 +433,11 @@ void Game::update(Time time)
         // AI controls
         if (Keyboard::isKeyPressed(Keyboard::Up) && game_playerPaddle.getPosition().y > 0)
         {
-            game_playerPaddle.move(0, -(varCpuVelocity * 20) * time.asSeconds());
+            game_playerPaddle.move(0, -(varCpuVelocity * 12) * time.asSeconds());
         }
         if (Keyboard::isKeyPressed(Keyboard::Down) && game_playerPaddle.getPosition().y < game_window.getSize().y - game_playerPaddle.getSize().y)
         {
-            game_playerPaddle.move(0, (varCpuVelocity * 20) * time.asSeconds());
+            game_playerPaddle.move(0, (varCpuVelocity * 12) * time.asSeconds());
         }
         // cpu paddle movement
         if (game_ball.getPosition().y > game_cpuPaddle.getPosition().y)
