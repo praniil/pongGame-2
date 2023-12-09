@@ -74,6 +74,7 @@ private:
     int buttonPosY;
     int startY;
     string infoMultiplayerString;
+    string levelHs;
 
     Font game_font;
     Text game_lifetext;

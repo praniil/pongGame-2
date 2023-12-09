@@ -51,8 +51,8 @@ Game ::Game()
     // sound
     // soundBuffer.loadFromFile("pongEdited.wav");
     // sound.setBuffer(soundBuffer);
-        soundBuffer.loadFromFile("pongSound2.wav");
-        sound.setBuffer(soundBuffer);
+    soundBuffer.loadFromFile("pongSound2.wav");
+    sound.setBuffer(soundBuffer);
 
     // background
     if (!backgroundTexture.loadFromFile("gameBg.jpg"))
@@ -149,18 +149,21 @@ void Game::setupLevelButtons()
     level1.setButton((windowWidth - buttonWidth) / 2, startY, buttonWidth, buttonHeight, "Level 1", game_font, [this]()
                      {
         varCpuVelocity = 800;
+        levelHs = "hs1.txt";
         ballVeloX = 450;
         ballVeloY = 450; });
 
     level2.setButton((windowWidth - buttonWidth) / 2, startY + buttonHeight + buttonSpacing, buttonWidth, buttonHeight, "Level 2", game_font, [this]()
                      {
         varCpuVelocity = 800;
+        levelHs = "hs2.txt";
         ballVeloX = 550;
         ballVeloY = 550; });
 
     level3.setButton((windowWidth - buttonWidth) / 2, startY + 2 * (buttonHeight + buttonSpacing), buttonWidth, buttonHeight, "Level 3", game_font, [this]()
                      {
         varCpuVelocity = 1000;
+        levelHs = "hs3.txt";
         ballVeloX = 660;
         ballVeloY = 660; });
 
@@ -223,23 +226,35 @@ void Game::handleLevelSelection()
                     if (level1.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
-                        varCpuVelocity = 540;
+                        levelHs = "hs1.txt";
+                        varCpuVelocity = 500;
                         ballVeloX = 550;
                         ballVeloY = 550;
+                        loadHighscore();
+                        updateHighscore();
+                        saveHighscore();
                     }
                     if (level2.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
-                        varCpuVelocity = 640;
-                        ballVeloX = 650;
-                        ballVeloY = 650;
+                        levelHs = "hs2.txt";
+                        varCpuVelocity = 650;
+                        ballVeloX = 700;
+                        ballVeloY = 700;
+                        loadHighscore();
+                        updateHighscore();
+                        saveHighscore();
                     }
                     if (level3.isButtonClicked(mousePosition))
                     {
                         levelSelected = true;
-                        varCpuVelocity = 800;
-                        ballVeloX = 800;
-                        ballVeloY = 800;
+                        levelHs = "hs3.txt";
+                        varCpuVelocity = 900;
+                        ballVeloX = 900;
+                        ballVeloY = 900;
+                        loadHighscore();
+                        updateHighscore();
+                        saveHighscore();
                     }
                 }
             }
@@ -287,25 +302,37 @@ void Game::run()
                 {
                     gameStarted = true;
                     levelSelected = true;
-                    varCpuVelocity = 540;
+                    levelHs = "hs1.txt";
+                    varCpuVelocity = 500;
                     ballVeloX = 550;
                     ballVeloY = 550;
+                    loadHighscore();
+                    updateHighscore();
+                    saveHighscore();
                 }
                 else if (level2.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
                 {
                     gameStarted = true;
                     levelSelected = true;
-                    varCpuVelocity = 640;
-                    ballVeloX = 650;
-                    ballVeloY = 650;
+                    levelHs = "hs2.txt";
+                    varCpuVelocity = 650;
+                    ballVeloX = 700;
+                    ballVeloY = 700;
+                    loadHighscore();
+                    updateHighscore();
+                    saveHighscore();
                 }
                 else if (level3.isButtonClicked(mousePosition) && event.type == sf::Event::MouseButtonReleased)
                 {
                     gameStarted = true;
                     levelSelected = true;
-                    varCpuVelocity = 800;
-                    ballVeloX = 800;
-                    ballVeloY = 800;
+                    levelHs = "hs3.txt";
+                    varCpuVelocity = 900;
+                    ballVeloX = 900;
+                    ballVeloY = 900;
+                    loadHighscore();
+                    updateHighscore();
+                    saveHighscore();
                 }
             }
         }
@@ -406,11 +433,11 @@ void Game::update(Time time)
         // AI controls
         if (Keyboard::isKeyPressed(Keyboard::Up) && game_playerPaddle.getPosition().y > 0)
         {
-            game_playerPaddle.move(0, -(varCpuVelocity * 10) * time.asSeconds());
+            game_playerPaddle.move(0, -(varCpuVelocity * 20) * time.asSeconds());
         }
         if (Keyboard::isKeyPressed(Keyboard::Down) && game_playerPaddle.getPosition().y < game_window.getSize().y - game_playerPaddle.getSize().y)
         {
-            game_playerPaddle.move(0, (varCpuVelocity * 10) * time.asSeconds());
+            game_playerPaddle.move(0, (varCpuVelocity * 20) * time.asSeconds());
         }
         // cpu paddle movement
         if (game_ball.getPosition().y > game_cpuPaddle.getPosition().y)
@@ -569,7 +596,8 @@ void Game::update(Time time)
 // highscore
 void Game ::loadHighscore()
 {
-    ifstream file("gamehighscore.txt");
+    // cout << levelHs;
+    ifstream file(levelHs);
     if (file.is_open())
     {
         file >> game_highscore;
@@ -578,7 +606,8 @@ void Game ::loadHighscore()
 }
 void Game ::saveHighscore()
 {
-    ofstream file("gamehighscore.txt");
+    // cout << levelHs;
+    ofstream file(levelHs);
     if (file.is_open())
     {
         file << game_highscore;
@@ -587,6 +616,7 @@ void Game ::saveHighscore()
 }
 void Game ::updateHighscore()
 {
+    // cout << levelHs;
     if (game_score > game_highscore)
     {
         game_highscore = game_score;
